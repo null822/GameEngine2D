@@ -1,0 +1,263 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="GameEngine2D:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/GameEngine2D_jar</output-path>
+    <root id="archive" name="GameEngine2D.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-assimp-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-assimp-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-assimp-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-assimp.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-bgfx-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-bgfx-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-bgfx-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-bgfx.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-cuda.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-egl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-fmod.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-freetype-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-freetype-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-freetype-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-freetype.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-glfw-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-glfw-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-glfw-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-glfw.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-harfbuzz-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-harfbuzz-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-harfbuzz-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-harfbuzz.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-hwloc-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-hwloc-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-hwloc-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-hwloc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-jawt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-jemalloc-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-jemalloc-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-jemalloc-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-jemalloc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-ktx-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-ktx-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-ktx-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-ktx.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-libdivide-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-libdivide-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-libdivide-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-libdivide.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-llvm-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-llvm-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-llvm-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-llvm.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lmdb-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lmdb-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lmdb-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lmdb.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lz4-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lz4-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lz4-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-lz4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meow-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meow-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meow-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meow.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meshoptimizer-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meshoptimizer-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meshoptimizer-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-meshoptimizer.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nanovg-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nanovg-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nanovg-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nanovg.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nfd-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nfd-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nfd-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nfd.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nuklear-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nuklear-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nuklear-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-nuklear.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-odbc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openal-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openal-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openal-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openal.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opencl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengl-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengl-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengl-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengles-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengles-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengles-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opengles.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openvr-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openvr-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openvr-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openvr.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openxr-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openxr-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-openxr.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opus-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opus-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opus-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-opus.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-ovr-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-ovr.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-par-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-par-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-par-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-par.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-remotery-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-remotery-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-remotery-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-remotery.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-rpmalloc-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-rpmalloc-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-rpmalloc-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-rpmalloc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-shaderc-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-shaderc-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-shaderc-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-shaderc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-spvc-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-spvc-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-spvc-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-spvc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-sse-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-sse-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-sse-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-sse.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-stb-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-stb-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-stb-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-stb.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyexr-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyexr-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyexr-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyexr.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyfd-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyfd-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyfd-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tinyfd.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tootle-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tootle-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tootle-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-tootle.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-vma-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-vma-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-vma-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-vma.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-vulkan-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-vulkan.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-xxhash-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-xxhash-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-xxhash-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-xxhash.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-yoga-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-yoga-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-yoga-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-yoga.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-zstd-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-zstd-natives-macos.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-zstd-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl-zstd.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/lwjgl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lwjgl/steamworks4j-1.9.0.jar" path-in-jar="/" />
+      <element id="module-output" name="GameEngine2D.main" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-assimp:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-bgfx:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-cuda:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-egl:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-fmod:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-freetype:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-glfw:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-harfbuzz:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-hwloc:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-jawt:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-jemalloc:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-ktx:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-libdivide:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-llvm:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-lmdb:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-lz4:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-meow:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-meshoptimizer:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-nanovg:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-nfd:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-nuklear:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-odbc:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-openal:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opencl:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opengl:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opengles:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-openvr:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-openxr:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opus:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-ovr:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-par:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-remotery:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-rpmalloc:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-shaderc:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-spvc:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-sse:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-stb:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-tinyexr:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-tinyfd:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-tootle:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-vma:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-vulkan:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-xxhash:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-yoga:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-zstd:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl:3.3.2" />
+      <element id="library" level="project" name="Gradle: com.code-disaster.steamworks4j:steamworks4j:1.9.0" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-assimp:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-bgfx:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-freetype:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-glfw:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-harfbuzz:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-hwloc:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-jemalloc:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-ktx:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-libdivide:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-llvm:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-lmdb:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-lz4:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-meow:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-meshoptimizer:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-nanovg:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-nfd:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-nuklear:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-openal:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opengl:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opengles:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-openvr:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-openxr:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-opus:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-ovr:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-par:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-remotery:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-rpmalloc:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-shaderc:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-spvc:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-sse:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-stb:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-tinyexr:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-tinyfd:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-tootle:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-vma:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-xxhash:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-yoga:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl-zstd:natives-windows:3.3.2" />
+      <element id="library" level="project" name="Gradle: org.lwjgl:lwjgl:natives-windows:3.3.2" />
+      <element id="library" level="project" name="lwjgl" />
+      <element id="directory" name="assets">
+        <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources/assets" />
+      </element>
+    </root>
+  </artifact>
+</component>
