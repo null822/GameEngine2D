@@ -144,10 +144,6 @@ public class Main implements Runnable {
 
             fps++;
 
-            int[] currentWidth = new int[]{1};
-            int[] currentHeight = new int[]{1};
-
-            glfwGetWindowSize(window, currentWidth, currentHeight);
 
 
             long now = System.nanoTime();
@@ -162,7 +158,7 @@ public class Main implements Runnable {
 
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println(tps + " tps, " + fps + " fps");
+                //System.out.println(tps + " tps, " + fps + " fps");
                 tps = 0;
                 fps = 0;
             }
@@ -203,6 +199,10 @@ public class Main implements Runnable {
     }
     public int getFps() {
         return fps;
+    }
+
+    public long getWindow() {
+        return window;
     }
 
 }

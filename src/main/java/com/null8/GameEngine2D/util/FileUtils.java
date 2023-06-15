@@ -16,14 +16,9 @@ public class FileUtils {
 
         try {
 
-            String path = "/assets/shaders/";
-
-            System.out.println(path + file);
-
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(
-                    Main.class.getResourceAsStream(path + file)
-            ))); //hm
+                    Main.class.getResourceAsStream("/assets/shaders/" + file)
+            )));
 
             String buffer = "";
 
