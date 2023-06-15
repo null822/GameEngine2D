@@ -1,24 +1,24 @@
 package com.null8.GameEngine2D.level;
 
-import com.null8.GameEngine2D.Main;
-import com.null8.GameEngine2D.graphics.Shader;
 import com.null8.GameEngine2D.graphics.Texture;
 import com.null8.GameEngine2D.graphics.VertexArray;
 import com.null8.GameEngine2D.math.Matrix4f;
-import com.null8.GameEngine2D.math.Vector3f;
+import com.null8.GameEngine2D.math.Vec3;
+import com.null8.GameEngine2D.registry.Shaders;
+
+import static com.null8.GameEngine2D.util.MathUtils.clamp;
 
 public class Level {
 
     private VertexArray background, fade;
-    private Texture bgTexture;
+    private final Texture bgTexture;
+
+    private final GameObject[] gameObjects;
 
     private float xScroll;
 
     private int imageWidth;
     private int imageHeight;
-
-    private int frameWidth;
-    private int frameHeight;
 
     private float renderWidth;
     private float pixelDensity;
@@ -26,20 +26,19 @@ public class Level {
     private float time = 0.0f;
     private boolean control = true, reset = false;
 
-    public Level(Main main) {
+    public Level(Texture bgTexture, GameObject[] gameObjects) {
 
-        setup(main);
+        this.bgTexture = bgTexture;
+        this.gameObjects = gameObjects;
+
         this.xScroll = 0f;
     }
 
-    public void setup(Main main) {
-
-        bgTexture = new Texture("background/checkerboard.png");
+    public void setup(int frameWidth, int frameHeight) {
 
         this.imageWidth = bgTexture.getWidth();
         this.imageHeight = bgTexture.getHeight();
-        this.frameWidth = main.getWidth();
-        this.frameHeight = main.getHeight();
+
 
         float scale = (float) frameHeight / imageHeight * 4;
 
@@ -52,6 +51,7 @@ public class Level {
 
         pixelDensity = (float) 80 / (imageWidth * (20 / xSize * 2));
 
+        xScroll = 0f;
 
         float[] vertices = new float[] {
                 -xSize, -ySize + height, 0.0f,
@@ -81,22 +81,35 @@ public class Level {
 
 
     public void render() {
+
+        xScroll = clamp(xScroll, 0f, maxXPos());
+
         bgTexture.bind();
-        Shader.BACKGROUND.enable();
+        Shaders.BACKGROUND.enable();
         background.bind();
 
-
-        xScroll = xScroll + 0.1f;
-
-
-
-        Shader.BACKGROUND.setUniformMat4f("vw_matrix", Matrix4f.translate(new Vector3f(-(float)((xScroll * pixelDensity) - (renderWidth / 2) + 10), 0.0f, 0.0f)));
+        Shaders.BACKGROUND.setUniformMat4f("vw_matrix", Matrix4f.translate(new Vec3(-(xScroll * pixelDensity) + (renderWidth / 2) - 10, 0.0f, 0.0f)));
         background.draw();
 
-
-        Shader.BACKGROUND.disable();
+        Shaders.BACKGROUND.disable();
         bgTexture.unbind();
 
+        for (GameObject gameObject : gameObjects)
+            gameObject.render(xScroll);
+
     }
+
+    public void setPos(float xScroll) {
+        this.xScroll = xScroll;
+    }
+
+    public float getPos() {
+        return this.xScroll;
+    }
+
+    public float maxXPos() {
+        return imageWidth - (20 / pixelDensity);
+    }
+
 
 }

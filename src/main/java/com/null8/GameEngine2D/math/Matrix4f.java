@@ -42,7 +42,7 @@ public class Matrix4f {
         return result;
     }
 
-    public static Matrix4f translate(Vector3f vector) {
+    public static Matrix4f translate(Vec3 vector) {
         Matrix4f result = identity();
         result.elements[0 + 3 * 4] = vector.x;
         result.elements[1 + 3 * 4] = vector.y;

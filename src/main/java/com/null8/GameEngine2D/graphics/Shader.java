@@ -1,7 +1,7 @@
 package com.null8.GameEngine2D.graphics;
 
 import com.null8.GameEngine2D.math.Matrix4f;
-import com.null8.GameEngine2D.math.Vector3f;
+import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.util.ShaderUtils;
 
 import java.util.HashMap;
@@ -14,8 +14,6 @@ public class Shader {
     public static final int VERTEX_ATTRIB = 0;
     public static final int TCOORD_ATTRIB = 1;
 
-    public static Shader TEST, BACKGROUND;
-
     private boolean enabled = false;
 
     private final int ID;
@@ -23,14 +21,6 @@ public class Shader {
 
     public Shader(String vertex, String fragment) {
         ID = ShaderUtils.load(vertex, fragment);
-    }
-
-    public static void loadAll() {
-        TEST = new Shader("shader.vsh", "shader.fsh");
-        BACKGROUND = new Shader("background.vsh", "background.fsh");
-        //BIRD = new Shader("shaders/bird.vert", "shaders/bird.frag");
-        //PIPE = new Shader("shaders/pipe.vert", "shaders/pipe.frag");
-        ///FADE = new Shader("shaders/fade.vert", "shaders/fade.frag");
     }
 
     public int getUniform(String name) {
@@ -60,7 +50,7 @@ public class Shader {
         glUniform2f(getUniform(name), x, y);
     }
 
-    public void setUniform3f(String name, Vector3f vector) {
+    public void setUniform3f(String name, Vec3 vector) {
         if (!enabled) enable();
         glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
     }

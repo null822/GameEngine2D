@@ -1,8 +1,8 @@
 package com.null8.GameEngine2D;
 
-import com.null8.GameEngine2D.graphics.Shader;
 import com.null8.GameEngine2D.level.Level;
 import com.null8.GameEngine2D.math.Matrix4f;
+import com.null8.GameEngine2D.registry.Levels;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -11,7 +11,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
 
-import static com.null8.GameEngine2D.graphics.Shader.BACKGROUND;
+import static com.null8.GameEngine2D.registry.Shaders.BACKGROUND;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -30,7 +30,7 @@ public class Main implements Runnable {
 
     private long window;
 
-    private Level level;
+    private volatile Level level;
 
     private static boolean isResized;
     private static boolean isFullscreen = false;
@@ -42,12 +42,16 @@ public class Main implements Runnable {
     private static int[] windowPosX = new int[1], windowPosY = new int[1];
     private static GLFWWindowSizeCallback sizeCallback;
 
+    private volatile boolean isInitialized = false;
+
 
 
     public void start() {
         running = true;
         thread = new Thread(this, "Render");
         thread.start();
+
+        ticks();
     }
 
     private void init() {
@@ -95,13 +99,13 @@ public class Main implements Runnable {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         System.out.println("Using OpenGL " + glGetString(GL_VERSION));
 
-        Shader.loadAll();
-
         Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
         BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         BACKGROUND.setUniform1i("tex", 1);
 
-        level = new Level(this);
+        level = Levels.TEST_LEVEL;
+        level.setup(this.width, this.height);
+
 
     }
 
@@ -135,24 +139,19 @@ public class Main implements Runnable {
         fps = 0;
 
 
+        this.isInitialized = true;
+        System.out.println("Initialized!");
+
         while (!glfwWindowShouldClose(window)) {
             if (isResized) {
                 GL11.glViewport(0, 0, width, height);
-                level.setup(this);
+                level.setup(this.width, this.height);
                 isResized = false;
             }
 
             fps++;
 
 
-
-            long now = System.nanoTime();
-            delta += (now - lastFrameTime) / ns;
-            lastFrameTime = now;
-            if (delta >= 1.0) {
-                tps++;
-                delta--;
-            }
 
             render();
 
@@ -170,6 +169,29 @@ public class Main implements Runnable {
         glfwTerminate();
     }
 
+
+    private void ticks() {
+
+        while (!this.isInitialized) {
+            try {
+                Thread.sleep(50);
+            } catch(Exception ignored) {}
+        }
+
+        while (!glfwWindowShouldClose(window)) {
+            long now = System.nanoTime();
+            delta += (now - lastFrameTime) / ns;
+            lastFrameTime = now;
+            if (delta >= 1.0) {
+                tps++;
+                delta--;
+
+                tick();
+            }
+        }
+    }
+
+
     private void render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -184,9 +206,21 @@ public class Main implements Runnable {
         glfwPollEvents();
     }
 
+    private void tick() {
+
+        float pos = this.level.getPos();
+
+        pos++;
+
+        pos = pos % level.maxXPos();
+
+        level.setPos(pos);
+    }
+
     public static void main(String[] args) {
         new Main().start();
     }
+
 
     public int getWidth() {
         return width;
@@ -199,10 +233,6 @@ public class Main implements Runnable {
     }
     public int getFps() {
         return fps;
-    }
-
-    public long getWindow() {
-        return window;
     }
 
 }
