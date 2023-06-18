@@ -2,16 +2,22 @@ package com.null8.GameEngine2D;
 
 import com.null8.GameEngine2D.level.Level;
 import com.null8.GameEngine2D.math.Matrix4f;
+import com.null8.GameEngine2D.math.Vec2;
+import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.registry.Levels;
+import com.null8.GameEngine2D.util.MathUtils;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
+import java.awt.*;
 import java.nio.IntBuffer;
 
 import static com.null8.GameEngine2D.registry.Shaders.BACKGROUND;
+import static com.null8.GameEngine2D.registry.Shaders.TEXTURE;
+import static com.null8.GameEngine2D.util.MathUtils.clamp;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -33,17 +39,27 @@ public class Main implements Runnable {
     private volatile Level level;
 
     private static boolean isResized;
-    private static boolean isFullscreen = false;
+    //private static boolean isFullscreen = false;
     private static int fps;
     private static int tps;
     private static long lastFrameTime;
     private static float delta;
     private static final double ns = 1000000000.0 / 60.0;
-    private static int[] windowPosX = new int[1], windowPosY = new int[1];
+    //private static int[] windowPosX = new int[1], windowPosY = new int[1];
     private static GLFWWindowSizeCallback sizeCallback;
 
     private volatile boolean isInitialized = false;
 
+    private volatile boolean[] heldMovementKeys = new boolean[4];
+
+    private Vec2<Float> pos = new Vec2<>(0.0f, 0.0f);
+    private Vec2<Float> vel = new Vec2<>(0.0f, 0.0f);
+
+    private final float velMax = 2f;
+    private final float velInc = 0.08f;
+
+    private final float velDamping = 0.25f;
+    private final float gravity = 0.1f;
 
 
     public void start() {
@@ -100,11 +116,16 @@ public class Main implements Runnable {
         System.out.println("Using OpenGL " + glGetString(GL_VERSION));
 
         Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+
         BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         BACKGROUND.setUniform1i("tex", 1);
+        TEXTURE.setUniformMat4f("pr_matrix", pr_matrix);
+        TEXTURE.setUniform1i("tex", 1);
 
         level = Levels.TEST_LEVEL;
-        level.setup(this.width, this.height);
+
+
+        setupElements();
 
 
     }
@@ -119,14 +140,32 @@ public class Main implements Runnable {
         };
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            }
+
+            if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) heldMovementKeys[0] = true;
+            if (key == GLFW_KEY_W && action == GLFW_PRESS) heldMovementKeys[0] = true;
+            if (key == GLFW_KEY_A && action == GLFW_PRESS) heldMovementKeys[1] = true;
+            if (key == GLFW_KEY_S && action == GLFW_PRESS) heldMovementKeys[2] = true;
+            if (key == GLFW_KEY_D && action == GLFW_PRESS) heldMovementKeys[3] = true;
+
+            if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) heldMovementKeys[0] = false;
+            if (key == GLFW_KEY_W && action == GLFW_RELEASE) heldMovementKeys[0] = false;
+            if (key == GLFW_KEY_A && action == GLFW_RELEASE) heldMovementKeys[1] = false;
+            if (key == GLFW_KEY_S && action == GLFW_RELEASE) heldMovementKeys[2] = false;
+            if (key == GLFW_KEY_D && action == GLFW_RELEASE) heldMovementKeys[3] = false;
+
         });
 
         //glfwSetCursorPosCallback(window, input.getMouseMoveCallback());
         //glfwSetMouseButtonCallback(window, input.getMouseButtonsCallback());
         //glfwSetScrollCallback(window, input.getMouseScrollCallback());
         glfwSetWindowSizeCallback(window, sizeCallback);
+    }
+
+    public void setupElements() {
+        level.setup(this.width, this.height);
     }
 
     public void run() {
@@ -145,7 +184,7 @@ public class Main implements Runnable {
         while (!glfwWindowShouldClose(window)) {
             if (isResized) {
                 GL11.glViewport(0, 0, width, height);
-                level.setup(this.width, this.height);
+                setupElements();
                 isResized = false;
             }
 
@@ -208,13 +247,53 @@ public class Main implements Runnable {
 
     private void tick() {
 
-        float pos = this.level.getPos();
+        // add/subtract from velocity depending on held keys
+        //if (heldMovementKeys[0]) vel.y += velInc;
+        if (pos.y == level.minYPos()) {
+            if (heldMovementKeys[1]) vel.x -= velInc;
+            if (heldMovementKeys[3]) vel.x += velInc;
+        }
 
-        pos++;
+        if (heldMovementKeys[2]) vel.y -= velInc;
 
-        pos = pos % level.maxXPos();
 
+        if (pos.y == level.minYPos() && heldMovementKeys[0]) {
+            vel.y = 1.5f;
+        }
+
+        // set respective velocity to 0 when touching any map edge
+        if (pos.x <= 0.0f && !heldMovementKeys[3]) vel.x = 0.0f;
+        if (pos.x >= level.maxXPos() && !heldMovementKeys[1]) vel.x = 0.0f;
+
+        if (pos.y <= level.minYPos() && !heldMovementKeys[0]) vel.y = 0.0f;
+        if (pos.y >= level.maxYPos() && vel.y > 0f) vel.y = 0.0f;
+
+        // add velocity to position
+        pos.x += vel.x;
+        pos.y += vel.y;
+
+        // decrement player x velocity to simulate friction and limit max velocity
+        vel.x = MathUtils.clamp(!heldMovementKeys[1] && !heldMovementKeys[3] ? vel.x / (velDamping + 1) : vel.x, -velMax, velMax);
+        vel.y -= gravity;
+
+        // set velocity to 0 if it is close enough
+        if (Math.abs(vel.x) < 0.001) vel.x = 0f;
+
+        // keep player within world bounds
+        pos.x = clamp(pos.x, 0f, level.maxXPos());
+        pos.y = clamp(pos.y, level.minYPos(), level.maxYPos());
+
+
+        System.out.println("pos: " + pos + ", vel: " + vel + ", maxX: " + level.maxXPos() + ", maxY: " + level.maxYPos() + ", minY: " + level.minYPos());
+
+
+        // update pos in level
         level.setPos(pos);
+
+
+
+        // all other code to run every tick
+
     }
 
     public static void main(String[] args) {

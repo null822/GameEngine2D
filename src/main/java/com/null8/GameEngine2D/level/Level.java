@@ -3,6 +3,7 @@ package com.null8.GameEngine2D.level;
 import com.null8.GameEngine2D.graphics.Texture;
 import com.null8.GameEngine2D.graphics.VertexArray;
 import com.null8.GameEngine2D.math.Matrix4f;
+import com.null8.GameEngine2D.math.Vec2;
 import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.registry.Shaders;
 
@@ -14,8 +15,9 @@ public class Level {
     private final Texture bgTexture;
 
     private final GameObject[] gameObjects;
+    private final GameObject player;
 
-    private float xScroll;
+    private Vec2<Float> pos;
 
     private int imageWidth;
     private int imageHeight;
@@ -23,41 +25,40 @@ public class Level {
     private float renderWidth;
     private float pixelDensity;
 
-    private float time = 0.0f;
-    private boolean control = true, reset = false;
+    private float frameWidth;
 
-    public Level(Texture bgTexture, GameObject[] gameObjects) {
+    public Level(Texture bgTexture, GameObject player, GameObject[] gameObjects) {
 
         this.bgTexture = bgTexture;
         this.gameObjects = gameObjects;
+        this.player = player;
 
-        this.xScroll = 0f;
+        this.pos = new Vec2<>(0.0f, 0.0f);
     }
 
     public void setup(int frameWidth, int frameHeight) {
 
+        this.frameWidth = frameWidth;
+
         this.imageWidth = bgTexture.getWidth();
         this.imageHeight = bgTexture.getHeight();
 
+        float scale = 4f;
 
-        float scale = (float) frameHeight / imageHeight * 4;
+        float xSize = (scale * frameHeight * imageWidth) / (imageHeight * frameWidth) * 1.785f;
+        float ySize = scale;
 
-        float xSize = scale * imageWidth / frameWidth * 1.785f;
-        float ySize = scale * imageHeight / frameHeight;
-
-        float height = 0.5f;
+        float heightOffset = 0.5f;
 
         this.renderWidth = xSize * 2;
 
-        pixelDensity = (float) 80 / (imageWidth * (20 / xSize * 2));
-
-        xScroll = 0f;
+        pixelDensity = (float) 2 * xSize / imageWidth;
 
         float[] vertices = new float[] {
-                -xSize, -ySize + height, 0.0f,
-                -xSize,  ySize + height, 0.0f,
-                xSize,  ySize + height, 0.0f,
-                xSize, -ySize + height, 0.0f
+                -xSize, -ySize + heightOffset, 0.0f,
+                -xSize,  ySize + heightOffset, 0.0f,
+                xSize,  ySize + heightOffset, 0.0f,
+                xSize, -ySize + heightOffset, 0.0f
         };
 
         byte[] indices = new byte[] {
@@ -73,43 +74,69 @@ public class Level {
         };
 
         background = new VertexArray(vertices, indices, tcs);
+
+        for (GameObject gameObject : gameObjects) {
+            gameObject.setup(frameWidth, frameHeight);
+        }
+        player.setup(frameWidth, frameHeight);
+
+
+        System.out.println("pd " + pixelDensity);
+        System.out.println("rw " + renderWidth);
+
     }
 
-    public boolean isGameOver() {
-        return reset;
+    public GameObject[] getGameObjects() {
+        return gameObjects;
     }
 
 
     public void render() {
 
-        xScroll = clamp(xScroll, 0f, maxXPos());
+        Vec3<Float> position = new Vec3<>(-(pos.x * pixelDensity) + (renderWidth / 2) - 10, 0.0f, 0.0f);
+
 
         bgTexture.bind();
         Shaders.BACKGROUND.enable();
         background.bind();
 
-        Shaders.BACKGROUND.setUniformMat4f("vw_matrix", Matrix4f.translate(new Vec3(-(xScroll * pixelDensity) + (renderWidth / 2) - 10, 0.0f, 0.0f)));
+        Shaders.BACKGROUND.setUniformMat4f("vw_matrix", Matrix4f.translate(position));
         background.draw();
 
-        Shaders.BACKGROUND.disable();
         bgTexture.unbind();
+        Shaders.BACKGROUND.disable();
+        background.unbind();
 
-        for (GameObject gameObject : gameObjects)
-            gameObject.render(xScroll);
+
+        for (GameObject gameObject : gameObjects) {
+            //System.out.println("rendering " + gameObject.getName() + " at:");
+            gameObject.render(pos.x);
+        }
+
+
+        player.move(new Vec3<>(pos.x / 2 + 30, pos.y, 2.0f));
+        player.render(pos.x);
 
     }
 
-    public void setPos(float xScroll) {
-        this.xScroll = xScroll;
+    public void setPos(Vec2<Float> pos) {
+        this.pos = pos;
     }
 
-    public float getPos() {
-        return this.xScroll;
+    public Vec2<Float> getPos() {
+        return this.pos;
     }
 
     public float maxXPos() {
-        return imageWidth - (20 / pixelDensity);
+        return  imageWidth;
     }
 
+    public float maxYPos() {
+        return 9;
+    }
+
+    public float minYPos() {
+        return -8;
+    }
 
 }

@@ -50,7 +50,7 @@ public class Shader {
         glUniform2f(getUniform(name), x, y);
     }
 
-    public void setUniform3f(String name, Vec3 vector) {
+    public void setUniform3f(String name, Vec3<Float> vector) {
         if (!enabled) enable();
         glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
     }
