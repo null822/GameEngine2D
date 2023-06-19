@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class FileUtils {
-
     private FileUtils() {
     }
 

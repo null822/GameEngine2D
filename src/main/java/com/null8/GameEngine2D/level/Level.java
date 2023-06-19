@@ -6,26 +6,30 @@ import com.null8.GameEngine2D.math.Matrix4f;
 import com.null8.GameEngine2D.math.Vec2;
 import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.registry.Shaders;
+import com.null8.GameEngine2D.util.MathUtils;
 
-import static com.null8.GameEngine2D.util.MathUtils.clamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Level {
 
     private VertexArray background, fade;
     private final Texture bgTexture;
 
+    private Matrix4f pr_matrix;
+
     private final GameObject[] gameObjects;
     private final GameObject player;
+    private final List<GameObject> texts = new ArrayList<>();
 
     private Vec2<Float> pos;
 
-    private int imageWidth;
-    private int imageHeight;
+    private float width;
+    private float height;
 
-    private float renderWidth;
-    private float pixelDensity;
+    private float frameX = 0;
 
-    private float frameWidth;
 
     public Level(Texture bgTexture, GameObject player, GameObject[] gameObjects) {
 
@@ -34,31 +38,26 @@ public class Level {
         this.player = player;
 
         this.pos = new Vec2<>(0.0f, 0.0f);
+
     }
 
-    public void setup(int frameWidth, int frameHeight) {
+    public void setup(float aspectRatio) {
 
-        this.frameWidth = frameWidth;
+        this.width = 96.0f * aspectRatio * 0.56f;
+        this.height = 96.0f;
 
-        this.imageWidth = bgTexture.getWidth();
-        this.imageHeight = bgTexture.getHeight();
+        float heightOffset = 12f;
 
-        float scale = 4f;
 
-        float xSize = (scale * frameHeight * imageWidth) / (imageHeight * frameWidth) * 1.785f;
-        float ySize = scale;
+        float xSize = (float) bgTexture.getWidth() / 2;
+        float ySize = (float) bgTexture.getHeight() / 2;
 
-        float heightOffset = 0.5f;
-
-        this.renderWidth = xSize * 2;
-
-        pixelDensity = (float) 2 * xSize / imageWidth;
 
         float[] vertices = new float[] {
-                -xSize, -ySize + heightOffset, 0.0f,
-                -xSize,  ySize + heightOffset, 0.0f,
-                xSize,  ySize + heightOffset, 0.0f,
-                xSize, -ySize + heightOffset, 0.0f
+                0,     0 + heightOffset,     1f,
+                0,     ySize + heightOffset, 1f,
+                xSize, ySize + heightOffset, 1f,
+                xSize, 0 + heightOffset,     1f
         };
 
         byte[] indices = new byte[] {
@@ -75,15 +74,6 @@ public class Level {
 
         background = new VertexArray(vertices, indices, tcs);
 
-        for (GameObject gameObject : gameObjects) {
-            gameObject.setup(frameWidth, frameHeight);
-        }
-        player.setup(frameWidth, frameHeight);
-
-
-        System.out.println("pd " + pixelDensity);
-        System.out.println("rw " + renderWidth);
-
     }
 
     public GameObject[] getGameObjects() {
@@ -93,7 +83,12 @@ public class Level {
 
     public void render() {
 
-        Vec3<Float> position = new Vec3<>(-(pos.x * pixelDensity) + (renderWidth / 2) - 10, 0.0f, 0.0f);
+        Vec3<Float> position = new Vec3<>(0.0f, 0.0f, 0.0f);
+
+        frameX = MathUtils.clamp(pos.x, width/2 - (player.getWidth()/2), maxXPos() - (width/2) - (player.getWidth()/2))
+                - (width/2) + (player.getWidth()/2);
+
+        this.pr_matrix = Matrix4f.orthographic(frameX, width + frameX, 0 * 9.0f / 16.0f, height * 9.0f / 16.0f, 0f, 4.0f);
 
 
         bgTexture.bind();
@@ -101,6 +96,7 @@ public class Level {
         background.bind();
 
         Shaders.BACKGROUND.setUniformMat4f("vw_matrix", Matrix4f.translate(position));
+        Shaders.BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
         background.draw();
 
         bgTexture.unbind();
@@ -109,34 +105,73 @@ public class Level {
 
 
         for (GameObject gameObject : gameObjects) {
-            //System.out.println("rendering " + gameObject.getName() + " at:");
-            gameObject.render(pos.x);
+            gameObject.render(pr_matrix);
         }
 
 
-        player.move(new Vec3<>(pos.x / 2 + 30, pos.y, 2.0f));
-        player.render(pos.x);
+        player.move(new Vec2<>(pos.x, pos.y));
+        player.render(pr_matrix);
+
+        List<GameObject> textsCopy = new ArrayList<>(texts);
+        for (GameObject text:textsCopy) {
+            if (text != null) {
+                text.render(pr_matrix);
+            }
+        }
 
     }
+
+    public void setText(GameObject text) {
+        String name = text.getName();
+
+        boolean containsElement = false;
+        for (GameObject textElement:texts) {
+            if (Objects.equals(textElement.getName(), name)) {
+                containsElement = true;
+                break;
+            }
+        }
+
+        if (!containsElement) {
+            addText(text);
+            return;
+        }
+
+        for (GameObject textElement:texts) {
+            if (Objects.equals(textElement.getName(), name)) {
+                texts.remove(textElement);
+                texts.add(text);
+            }
+        }
+    }
+
+    public void addText(GameObject text) {
+        texts.add(text);
+    }
+
+    public void removeText(GameObject text) {
+        String name = text.getName();
+        texts.removeIf(textElement -> Objects.equals(textElement.getName(), name));
+    }
+
 
     public void setPos(Vec2<Float> pos) {
         this.pos = pos;
     }
-
     public Vec2<Float> getPos() {
         return this.pos;
     }
-
     public float maxXPos() {
-        return  imageWidth;
+        return (float) bgTexture.getWidth() / 2;
     }
-
     public float maxYPos() {
-        return 9;
+        return (float) bgTexture.getHeight() / 2;
     }
-
-    public float minYPos() {
-        return -8;
+    public GameObject getPlayer() {
+        return this.player;
+    }
+    public float getFrameX() {
+        return this.frameX;
     }
 
 }

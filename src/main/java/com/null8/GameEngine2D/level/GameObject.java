@@ -4,10 +4,8 @@ import com.null8.GameEngine2D.graphics.Shader;
 import com.null8.GameEngine2D.graphics.Texture;
 import com.null8.GameEngine2D.graphics.VertexArray;
 import com.null8.GameEngine2D.math.Matrix4f;
+import com.null8.GameEngine2D.math.Vec2;
 import com.null8.GameEngine2D.math.Vec3;
-import com.null8.GameEngine2D.registry.GameObjects;
-import com.null8.GameEngine2D.registry.Shaders;
-import com.null8.GameEngine2D.registry.Textures;
 
 public class GameObject {
 
@@ -19,21 +17,13 @@ public class GameObject {
 
     private Vec3<Float> pos;
 
-    private int imageWidth;
-    private int imageHeight;
-
-    private float renderWidth;
-    private float pixelDensityX;
-    private float pixelDensityY;
-
-    private float xSize;
-    private float ySize;
-
     private float width;
     private float height;
 
+    private float heightOffset;
 
-    public GameObject(String name, Texture tex, Shader shader, int width, int height) {
+
+    public GameObject(String name, Texture tex, Shader shader, int width, int height, float zHeight) {
 
         this.tex = tex;
         this.shader = shader;
@@ -42,7 +32,12 @@ public class GameObject {
         this.width = width;
         this.height = height;
 
-        this.pos = new Vec3<>(0f, 0f, 0f);
+        this.pos = new Vec3<>(0f, 0f, zHeight);
+
+        this.heightOffset = 12f;
+
+
+        setup();
     }
 
     public GameObject(GameObject template) {
@@ -55,31 +50,23 @@ public class GameObject {
         this.height = template.height;
 
         this.pos = new Vec3<>(0f, 0f, 0f);
+
+        this.heightOffset = 12f;
+
+        setup();
     }
 
-    public void setup(int frameWidth, int frameHeight) {
+    public void setup() {
 
-        this.imageWidth = tex.getWidth();
-        this.imageHeight = tex.getHeight();
+        float xSize = width;
+        float ySize = height;
 
-        double scaleX = (float) imageWidth / 8;
-        double scaleY = (float) imageHeight / 8;
-
-        float xSize = (float) ((scaleX * frameHeight * imageWidth) / (imageWidth * frameWidth) * 1.785f);
-        float ySize = (float) scaleY;
-
-        float heightOffset = 0.5f;
-
-        this.renderWidth = xSize * 2;
-
-        pixelDensityX = (float) 2 * xSize / imageWidth;
-        pixelDensityY = (float) 2 * ySize / imageHeight;
 
         float[] vertices = new float[] {
-                -xSize, -ySize + heightOffset, 0.0f,
-                -xSize,  ySize + heightOffset, 0.0f,
-                xSize,  ySize + heightOffset, 0.0f,
-                xSize, -ySize + heightOffset, 0.0f
+                0,     0 + heightOffset,     pos.z,
+                0,     ySize + heightOffset, pos.z,
+                xSize, ySize + heightOffset, pos.z,
+                xSize, 0 + heightOffset,     pos.z
         };
 
         byte[] indices = new byte[] {
@@ -97,15 +84,13 @@ public class GameObject {
         texVert = new VertexArray(vertices, indices, tcs);
     }
 
-    public void setPixelDensityX(float pixelDensity) {
-        this.pixelDensityX = pixelDensity;
-    }
-    public void setPixelDensityY(float pixelDensity) {
-        this.pixelDensityY = pixelDensity;
-    }
-
     public GameObject move(Vec3<Float> newPos) {
         this.pos = newPos;
+        return this;
+    }
+
+    public GameObject move(Vec2<Float> newPos) {
+        this.pos = new Vec3<>(newPos, this.pos.z);
         return this;
     }
 
@@ -113,30 +98,37 @@ public class GameObject {
         return new GameObject(this).move(newPos);
     }
 
+    public GameObject moveCopy(Vec2<Float> newPos) {
+        return new GameObject(this).move(new Vec3<>(newPos, this.pos.z));
+    }
 
-    public void render(double xScroll) {
 
-        Vec3<Float> position = new Vec3<>((float) (-(xScroll * pixelDensityX / 2) + (renderWidth / 2) - 10 + (pos.x * pixelDensityX)), (pos.y * pixelDensityY), (pos.z * pixelDensityX));
+    public void render(Matrix4f pr_matrix) {
 
 
         tex.bind();
-        Shaders.TEXTURE.enable();
+        shader.enable();
         texVert.bind();
 
-        Shaders.TEXTURE.setUniformMat4f("vw_matrix", Matrix4f.translate(position));
+        shader.setUniformMat4f("pr_matrix", pr_matrix);
+        shader.setUniformMat4f("vw_matrix", Matrix4f.translate(pos));
         texVert.draw();
 
         tex.unbind();
-        Shaders.TEXTURE.disable();
+        shader.disable();
         texVert.unbind();
 
-        //System.out.println(position);
 
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
-
+    public float getWidth() {
+        return this.width;
+    }
+    public float getHeight() {
+        return this.height;
+    }
 
 }

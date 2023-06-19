@@ -1,10 +1,15 @@
 package com.null8.GameEngine2D;
 
+import com.null8.GameEngine2D.graphics.Shader;
+import com.null8.GameEngine2D.graphics.Texture;
+import com.null8.GameEngine2D.level.GameObject;
 import com.null8.GameEngine2D.level.Level;
 import com.null8.GameEngine2D.math.Matrix4f;
 import com.null8.GameEngine2D.math.Vec2;
 import com.null8.GameEngine2D.math.Vec3;
+import com.null8.GameEngine2D.math.Vec4;
 import com.null8.GameEngine2D.registry.Levels;
+import com.null8.GameEngine2D.registry.Shaders;
 import com.null8.GameEngine2D.util.MathUtils;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
@@ -13,8 +18,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
+import static com.null8.GameEngine2D.graphics.text.Text.*;
 import static com.null8.GameEngine2D.registry.Shaders.BACKGROUND;
 import static com.null8.GameEngine2D.registry.Shaders.TEXTURE;
 import static com.null8.GameEngine2D.util.MathUtils.clamp;
@@ -23,6 +33,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryStack.stackShorts;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 
@@ -31,7 +42,6 @@ public class Main implements Runnable {
     private int width = 800;
     private int height = 500;
 
-    private Thread thread;
     private boolean running = false;
 
     private long window;
@@ -39,23 +49,27 @@ public class Main implements Runnable {
     private volatile Level level;
 
     private static boolean isResized;
-    //private static boolean isFullscreen = false;
     private static int fps;
     private static int tps;
     private static long lastFrameTime;
     private static float delta;
     private static final double ns = 1000000000.0 / 60.0;
-    //private static int[] windowPosX = new int[1], windowPosY = new int[1];
     private static GLFWWindowSizeCallback sizeCallback;
 
     private volatile boolean isInitialized = false;
 
-    private volatile boolean[] heldMovementKeys = new boolean[4];
+    private final List<BufferedImage> textQueue = new ArrayList<>();
+    private final List<Vec2<Integer>> textQueueMeta = new ArrayList<>();
+    private final List<GameObject> textQueueOut = new ArrayList<>();
 
-    private Vec2<Float> pos = new Vec2<>(0.0f, 0.0f);
-    private Vec2<Float> vel = new Vec2<>(0.0f, 0.0f);
+    // Movement and position
 
-    private final float velMax = 2f;
+    private final boolean[] heldMovementKeys = new boolean[4];
+
+    private final Vec2<Float> pos = new Vec2<>(0.0f, 0.0f);
+    private final Vec2<Float> vel = new Vec2<>(0.0f, 0.0f);
+
+    private final float velMax = 0.5f;
     private final float velInc = 0.08f;
 
     private final float velDamping = 0.25f;
@@ -64,7 +78,7 @@ public class Main implements Runnable {
 
     public void start() {
         running = true;
-        thread = new Thread(this, "Render");
+        Thread thread = new Thread(this, "Render");
         thread.start();
 
         ticks();
@@ -115,18 +129,9 @@ public class Main implements Runnable {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         System.out.println("Using OpenGL " + glGetString(GL_VERSION));
 
-        Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-
-        BACKGROUND.setUniformMat4f("pr_matrix", pr_matrix);
-        BACKGROUND.setUniform1i("tex", 1);
-        TEXTURE.setUniformMat4f("pr_matrix", pr_matrix);
-        TEXTURE.setUniform1i("tex", 1);
-
         level = Levels.TEST_LEVEL;
 
-
         setupElements();
-
 
     }
 
@@ -148,12 +153,14 @@ public class Main implements Runnable {
             if (key == GLFW_KEY_W && action == GLFW_PRESS) heldMovementKeys[0] = true;
             if (key == GLFW_KEY_A && action == GLFW_PRESS) heldMovementKeys[1] = true;
             if (key == GLFW_KEY_S && action == GLFW_PRESS) heldMovementKeys[2] = true;
+            if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS) heldMovementKeys[2] = true;
             if (key == GLFW_KEY_D && action == GLFW_PRESS) heldMovementKeys[3] = true;
 
             if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE) heldMovementKeys[0] = false;
             if (key == GLFW_KEY_W && action == GLFW_RELEASE) heldMovementKeys[0] = false;
             if (key == GLFW_KEY_A && action == GLFW_RELEASE) heldMovementKeys[1] = false;
             if (key == GLFW_KEY_S && action == GLFW_RELEASE) heldMovementKeys[2] = false;
+            if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE) heldMovementKeys[2] = false;
             if (key == GLFW_KEY_D && action == GLFW_RELEASE) heldMovementKeys[3] = false;
 
         });
@@ -165,7 +172,7 @@ public class Main implements Runnable {
     }
 
     public void setupElements() {
-        level.setup(this.width, this.height);
+        level.setup((float) this.width / this.height);
     }
 
     public void run() {
@@ -238,8 +245,25 @@ public class Main implements Runnable {
         if (error != GL_NO_ERROR)
             System.out.println(error);
 
-        level.render();
+        if (!textQueue.isEmpty()) {
 
+            List<BufferedImage> textQueueCopy = new ArrayList<>(textQueue);
+            List<Vec2<Integer>> textQueueMetaCopy = new ArrayList<>(textQueueMeta);
+
+            int i = 0;
+            for (BufferedImage image:textQueueCopy) {
+                Vec2<Integer> size = textQueueMetaCopy.get(i);
+                Texture textTexture = new Texture(image);
+                GameObject textElement = new GameObject("debug", textTexture, Shaders.TEXT, size.x, size.y, 2);
+                textQueueOut.add(textElement);
+                textQueue.remove(image);
+
+                i++;
+            }
+
+        }
+
+        level.render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -248,51 +272,77 @@ public class Main implements Runnable {
     private void tick() {
 
         // add/subtract from velocity depending on held keys
-        //if (heldMovementKeys[0]) vel.y += velInc;
-        if (pos.y == level.minYPos()) {
+        if (pos.y == 0f) {
             if (heldMovementKeys[1]) vel.x -= velInc;
             if (heldMovementKeys[3]) vel.x += velInc;
         }
 
         if (heldMovementKeys[2]) vel.y -= velInc;
 
-
-        if (pos.y == level.minYPos() && heldMovementKeys[0]) {
-            vel.y = 1.5f;
+        // jumping
+        if (pos.y == 0f && heldMovementKeys[0]) {
+            vel.y = 1.25f;
         }
 
-        // set respective velocity to 0 when touching any map edge
-        if (pos.x <= 0.0f && !heldMovementKeys[3]) vel.x = 0.0f;
-        if (pos.x >= level.maxXPos() && !heldMovementKeys[1]) vel.x = 0.0f;
+        // leaping left
+        if (pos.y == 0f && heldMovementKeys[0] && heldMovementKeys[1]) {
+            vel.y = 0.75f;
+            vel.x -= 0.5f;
+        }
 
-        if (pos.y <= level.minYPos() && !heldMovementKeys[0]) vel.y = 0.0f;
-        if (pos.y >= level.maxYPos() && vel.y > 0f) vel.y = 0.0f;
+        // leaping right
+        if (pos.y == 0f && heldMovementKeys[0] && heldMovementKeys[3]) {
+            vel.y = 0.75f;
+            vel.x += 0.5f;
+        }
 
         // add velocity to position
         pos.x += vel.x;
         pos.y += vel.y;
 
         // decrement player x velocity to simulate friction and limit max velocity
-        vel.x = MathUtils.clamp(!heldMovementKeys[1] && !heldMovementKeys[3] ? vel.x / (velDamping + 1) : vel.x, -velMax, velMax);
+        vel.x = pos.y <= 0f ? MathUtils.clamp(!heldMovementKeys[1] && !heldMovementKeys[3] ? vel.x / (velDamping + 1) : vel.x, -velMax, velMax) : vel.x;
         vel.y -= gravity;
 
         // set velocity to 0 if it is close enough
-        if (Math.abs(vel.x) < 0.001) vel.x = 0f;
+        if (Math.abs(vel.x) <= 0.001) vel.x = 0f;
+        if (Math.abs(vel.y) <= 0.001) vel.y = 0f;
+
+        // set respective velocity to 0 when touching any map edge
+        if (pos.x <= 0.0f && !heldMovementKeys[3]) vel.x = 0.0f;
+        if (pos.x >= level.maxXPos() - level.getPlayer().getWidth() && !heldMovementKeys[1]) vel.x = 0.0f;
+
+        if (pos.y <= 0f && !heldMovementKeys[0]) vel.y = 0.0f;
+        if (pos.y >= level.maxYPos() - level.getPlayer().getHeight() + 1 && vel.y > 0f) vel.y = 0.0f;
 
         // keep player within world bounds
-        pos.x = clamp(pos.x, 0f, level.maxXPos());
-        pos.y = clamp(pos.y, level.minYPos(), level.maxYPos());
-
-
-        System.out.println("pos: " + pos + ", vel: " + vel + ", maxX: " + level.maxXPos() + ", maxY: " + level.maxYPos() + ", minY: " + level.minYPos());
+        pos.x = clamp(pos.x, 0f, level.maxXPos() - level.getPlayer().getWidth());
+        pos.y = clamp(pos.y, 0f, level.maxYPos() - level.getPlayer().getHeight() + 1);
 
 
         // update pos in level
         level.setPos(pos);
 
+        //display debug stats
+
+        char[][] text = charsFromStrings( new String[] {
+                "pos: " + pos + ", vel: " + vel,
+                "maxX: " + level.maxXPos() + ", maxY: " + level.maxYPos()
+        });
+
+        textQueue.add(imageFromText(896, 128, 16, new Color(0, 0, 0, 0), makeCCArray(text)));
+        textQueueMeta.add(new Vec2<>(64, 10));
 
 
-        // all other code to run every tick
+        List<GameObject> textQueueOutCopy = new ArrayList<>(textQueueOut);
+        for(GameObject textElement:textQueueOutCopy) {
+            textElement.move(new Vec2<>(level.getFrameX(), level.maxYPos()));
+            level.setText(textElement);
+            textQueueOut.remove(textElement);
+        }
+
+
+        // all other code to run every tick (such as actual game updates etc.)
 
     }
 
