@@ -9,18 +9,18 @@ import com.null8.GameEngine2D.math.Vec3;
 
 public class GameObject {
 
-    private String name;
+    String name;
 
-    private VertexArray texVert;
-    private final Texture tex;
-    private final Shader shader;
+    VertexArray texVert;
+    Texture tex;
+    Shader shader;
 
-    private Vec3<Float> pos;
+    Vec3<Float> pos;
 
-    private float width;
-    private float height;
+    float width;
+    float height;
 
-    private float heightOffset;
+    float heightOffset;
 
 
     public GameObject(String name, Texture tex, Shader shader, int width, int height, float zHeight) {
@@ -105,7 +105,6 @@ public class GameObject {
 
     public void render(Matrix4f pr_matrix) {
 
-
         tex.bind();
         shader.enable();
         texVert.bind();
@@ -117,7 +116,6 @@ public class GameObject {
         tex.unbind();
         shader.disable();
         texVert.unbind();
-
 
     }
 

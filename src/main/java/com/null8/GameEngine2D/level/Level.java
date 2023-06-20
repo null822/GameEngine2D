@@ -14,13 +14,13 @@ import java.util.Objects;
 
 public class Level {
 
-    private VertexArray background, fade;
+    private VertexArray background;
     private final Texture bgTexture;
 
     private Matrix4f pr_matrix;
 
     private final GameObject[] gameObjects;
-    private final GameObject player;
+    private final Player player;
     private final List<GameObject> texts = new ArrayList<>();
 
     private Vec2<Float> pos;
@@ -31,7 +31,7 @@ public class Level {
     private float frameX = 0;
 
 
-    public Level(Texture bgTexture, GameObject player, GameObject[] gameObjects) {
+    public Level(Texture bgTexture, Player player, GameObject[] gameObjects) {
 
         this.bgTexture = bgTexture;
         this.gameObjects = gameObjects;
@@ -81,7 +81,7 @@ public class Level {
     }
 
 
-    public void render() {
+    public void render(boolean step) {
 
         Vec3<Float> position = new Vec3<>(0.0f, 0.0f, 0.0f);
 
@@ -110,7 +110,7 @@ public class Level {
 
 
         player.move(new Vec2<>(pos.x, pos.y));
-        player.render(pr_matrix);
+        player.render(pr_matrix, step);
 
         List<GameObject> textsCopy = new ArrayList<>(texts);
         for (GameObject text:textsCopy) {
@@ -167,7 +167,7 @@ public class Level {
     public float maxYPos() {
         return (float) bgTexture.getHeight() / 2;
     }
-    public GameObject getPlayer() {
+    public Player getPlayer() {
         return this.player;
     }
     public float getFrameX() {
