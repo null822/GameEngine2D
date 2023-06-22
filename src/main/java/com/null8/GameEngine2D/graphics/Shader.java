@@ -17,7 +17,7 @@ public class Shader {
     private boolean enabled = false;
 
     private final int ID;
-    private Map<String, Integer> locationCache = new HashMap<String, Integer>();
+    private Map<String, Integer> locationCache = new HashMap<>();
 
     public Shader(String vertex, String fragment) {
         ID = ShaderUtils.load(vertex, fragment);

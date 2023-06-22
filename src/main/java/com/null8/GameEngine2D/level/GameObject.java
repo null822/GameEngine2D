@@ -84,24 +84,6 @@ public class GameObject {
         texVert = new VertexArray(vertices, indices, tcs);
     }
 
-    public GameObject move(Vec3<Float> newPos) {
-        this.pos = newPos;
-        return this;
-    }
-
-    public GameObject move(Vec2<Float> newPos) {
-        this.pos = new Vec3<>(newPos, this.pos.z);
-        return this;
-    }
-
-    public GameObject moveCopy(Vec3<Float> newPos) {
-        return new GameObject(this).move(newPos);
-    }
-
-    public GameObject moveCopy(Vec2<Float> newPos) {
-        return new GameObject(this).move(new Vec3<>(newPos, this.pos.z));
-    }
-
 
     public void render(Matrix4f pr_matrix) {
 
@@ -127,6 +109,34 @@ public class GameObject {
     }
     public float getHeight() {
         return this.height;
+    }
+    public float getZHeight() {
+        return this.pos.z;
+    }
+    public void setZHeight(float zHeight) {
+        this.pos.z = zHeight;
+    }
+    public Vec3<Float> getPos() {
+        return this.pos;
+    }
+
+
+    public GameObject move(Vec3<Float> newPos) {
+        this.pos = newPos;
+        return this;
+    }
+
+    public GameObject move(Vec2<Float> newPos) {
+        this.pos = new Vec3<>(newPos, this.pos.z);
+        return this;
+    }
+
+    public GameObject moveCopy(Vec3<Float> newPos) {
+        return new GameObject(this).move(newPos);
+    }
+
+    public GameObject moveCopy(Vec2<Float> newPos) {
+        return new GameObject(this).move(new Vec3<>(newPos, this.pos.z));
     }
 
 }

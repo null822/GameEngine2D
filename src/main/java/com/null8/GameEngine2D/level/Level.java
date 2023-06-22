@@ -2,40 +2,45 @@ package com.null8.GameEngine2D.level;
 
 import com.null8.GameEngine2D.graphics.Texture;
 import com.null8.GameEngine2D.graphics.VertexArray;
+import com.null8.GameEngine2D.level.manager.GameObjectManager;
 import com.null8.GameEngine2D.math.Matrix4f;
 import com.null8.GameEngine2D.math.Vec2;
 import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.registry.Shaders;
 import com.null8.GameEngine2D.util.MathUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class Level {
 
     private VertexArray background;
     private final Texture bgTexture;
 
-    private Matrix4f pr_matrix;
+//    private final GameObject[] gameObjects;
+//    private final FakePlayer[] fakePlayers;
+//    private int playerIndex = 0;
+//
+//    private final Player player;
+//    private final List<GameObject> texts = new ArrayList<>();
 
-    private final GameObject[] gameObjects;
-    private final Player player;
-    private final List<GameObject> texts = new ArrayList<>();
+    private final GameObjectManager manager;
+
+    private final float[] margins;
 
     private Vec2<Float> pos;
 
     private float width;
     private float height;
 
+    private float xSize;
+    private float ySize;
+
     private float frameX = 0;
 
 
-    public Level(Texture bgTexture, Player player, GameObject[] gameObjects) {
+    public Level(Texture bgTexture, Player player, GameObject[] gameObjects, FakePlayer[] fakePlayers, float[] margins) {
 
         this.bgTexture = bgTexture;
-        this.gameObjects = gameObjects;
-        this.player = player;
+        this.manager = new GameObjectManager(gameObjects, fakePlayers, player);
+        this.margins = margins;
 
         this.pos = new Vec2<>(0.0f, 0.0f);
 
@@ -43,14 +48,14 @@ public class Level {
 
     public void setup(float aspectRatio) {
 
-        this.width = 96.0f * aspectRatio * 0.56f;
-        this.height = 96.0f;
+        this.width  = 320.0f * aspectRatio * 0.56f;
+        this.height = 320.0f;
 
         float heightOffset = 12f;
 
 
-        float xSize = (float) bgTexture.getWidth() / 2;
-        float ySize = (float) bgTexture.getHeight() / 2;
+        xSize = (float) bgTexture.getWidth();
+        ySize = (float) bgTexture.getHeight();
 
 
         float[] vertices = new float[] {
@@ -76,19 +81,17 @@ public class Level {
 
     }
 
-    public GameObject[] getGameObjects() {
-        return gameObjects;
-    }
-
-
     public void render(boolean step) {
 
-        Vec3<Float> position = new Vec3<>(0.0f, 0.0f, 0.0f);
 
-        frameX = MathUtils.clamp(pos.x, width/2 - (player.getWidth()/2), maxXPos() - (width/2) - (player.getWidth()/2))
-                - (width/2) + (player.getWidth()/2);
+        float playerWidth = manager.getPlayer().getWidth();
 
-        this.pr_matrix = Matrix4f.orthographic(frameX, width + frameX, 0 * 9.0f / 16.0f, height * 9.0f / 16.0f, 0f, 4.0f);
+        Vec3<Float> position = new Vec3<>(0.0f, 0.0f, -8.0f);
+
+        frameX = MathUtils.clamp(pos.x, width/2 - (playerWidth/2), xSize - (width/2) - (playerWidth/2))
+                - (width/2) + (playerWidth/2);
+
+        Matrix4f pr_matrix = Matrix4f.orthographic(frameX, width + frameX, 0 * 9.0f / 16.0f, height * 9.0f / 16.0f, -8f, 8.0f);
 
 
         bgTexture.bind();
@@ -103,55 +106,18 @@ public class Level {
         Shaders.BACKGROUND.disable();
         background.unbind();
 
-
-        for (GameObject gameObject : gameObjects) {
-            gameObject.render(pr_matrix);
-        }
-
-
-        player.move(new Vec2<>(pos.x, pos.y));
-        player.render(pr_matrix, step);
-
-        List<GameObject> textsCopy = new ArrayList<>(texts);
-        for (GameObject text:textsCopy) {
-            if (text != null) {
-                text.render(pr_matrix);
-            }
-        }
+        manager.render(pr_matrix, pos, step);
 
     }
 
     public void setText(GameObject text) {
-        String name = text.getName();
-
-        boolean containsElement = false;
-        for (GameObject textElement:texts) {
-            if (Objects.equals(textElement.getName(), name)) {
-                containsElement = true;
-                break;
-            }
-        }
-
-        if (!containsElement) {
-            addText(text);
-            return;
-        }
-
-        for (GameObject textElement:texts) {
-            if (Objects.equals(textElement.getName(), name)) {
-                texts.remove(textElement);
-                texts.add(text);
-            }
-        }
+        manager.setText(text);
     }
-
     public void addText(GameObject text) {
-        texts.add(text);
+        manager.addText(text);
     }
-
     public void removeText(GameObject text) {
-        String name = text.getName();
-        texts.removeIf(textElement -> Objects.equals(textElement.getName(), name));
+        manager.removeText(text);
     }
 
 
@@ -161,14 +127,23 @@ public class Level {
     public Vec2<Float> getPos() {
         return this.pos;
     }
+    public float minXPos() {
+        return margins[0];
+    }
     public float maxXPos() {
-        return (float) bgTexture.getWidth() / 2;
+        return xSize - margins[2];
+    }
+    public float minYPos() {
+        return margins[3];
     }
     public float maxYPos() {
-        return (float) bgTexture.getHeight() / 2;
+        return ySize - margins[1];
     }
     public Player getPlayer() {
-        return this.player;
+        return this.manager.getPlayer();
+    }
+    public FakePlayer getFakePlayer(String name) {
+        return this.manager.getFakePlayer(name);
     }
     public float getFrameX() {
         return this.frameX;

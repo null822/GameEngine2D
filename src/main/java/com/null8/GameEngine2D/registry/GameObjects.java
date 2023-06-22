@@ -1,10 +1,14 @@
 package com.null8.GameEngine2D.registry;
 
+import com.null8.GameEngine2D.level.FakePlayer;
 import com.null8.GameEngine2D.level.GameObject;
 
 public class GameObjects {
 
-    public static final GameObject TEST = new GameObject("test_object", Textures.TEST, Shaders.TEXTURE, 8, 8, 2);
-    public static final GameObject TEST_SMALL = new GameObject("test_object", Textures.TEST_SMALL, Shaders.TEXTURE, 4, 4, 2);
-    public static final GameObject TEST_TALL = new GameObject("test_object", Textures.TEST_TALL, Shaders.TEXTURE, 4, 8, 2);
+    public static final GameObject CHAIR = new GameObject("chair", Textures.CHAIR, Shaders.TEXTURE, 40, 80, -4);
+    public static final GameObject TABLE = new GameObject("table", Textures.TABLE, Shaders.TEXTURE, 256, 64, 0);
+
+    public static final GameObject BANQUO = new GameObject("banquo", Textures.BANQUO, Shaders.TEXTURE, 29, 40, 3);
+    public static final FakePlayer ROSS = new FakePlayer("ross", Textures.ROSS_STAND, Textures.ROSS_WALK, Shaders.TEXTURE, 32, 96, 1);
+
 }

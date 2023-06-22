@@ -1,9 +1,11 @@
 package com.null8.GameEngine2D;
 
 import com.null8.GameEngine2D.graphics.Texture;
+import com.null8.GameEngine2D.level.FakePlayer;
 import com.null8.GameEngine2D.level.GameObject;
 import com.null8.GameEngine2D.level.Level;
 import com.null8.GameEngine2D.math.Vec2;
+import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.registry.Levels;
 import com.null8.GameEngine2D.registry.Shaders;
 import com.null8.GameEngine2D.util.MathUtils;
@@ -13,11 +15,13 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.null8.GameEngine2D.graphics.text.Text.*;
 import static com.null8.GameEngine2D.util.MathUtils.clamp;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -29,12 +33,12 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Main implements Runnable {
 
-    private int width = 800;
-    private int height = 500;
+    private static int width = 800;
+    private static int height = 500;
 
-    private long window;
+    private static long window;
 
-    private volatile Level level;
+    private static volatile Level level;
 
     private static boolean isResized;
     private static int fps;
@@ -44,29 +48,32 @@ public class Main implements Runnable {
     private static final double ns = 1000000000.0 / 60.0;
     private static GLFWWindowSizeCallback sizeCallback;
 
-    private volatile boolean isInitialized = false;
+    private static volatile boolean isInitialized = false;
 
-    private final List<BufferedImage> textQueue = new ArrayList<>();
-    private final List<Vec2<Integer>> textQueueMeta = new ArrayList<>();
-    private final List<GameObject> textQueueOut = new ArrayList<>();
+    private static final List<BufferedImage> textQueue = new ArrayList<>();
+    private static final List<Vec2<Integer>> textQueueMeta = new ArrayList<>();
+    private static final List<GameObject> textQueueOut = new ArrayList<>();
 
     // Movement and position
 
-    private final boolean[] heldMovementKeys = new boolean[4];
+    private static final boolean[] heldMovementKeys = new boolean[4];
 
-    private final Vec2<Float> pos = new Vec2<>(0.0f, 0.0f);
-    private final Vec2<Float> vel = new Vec2<>(0.0f, 0.0f);
+    private static final Vec2<Float> pos = new Vec2<>(0.0f, 0.0f);
+    private static final Vec2<Float> vel = new Vec2<>(0.0f, 0.0f);
 
-    private final float velMax = 0.25f;
-    private final float velInc = 0.04f;
+    private static final float velMax = 1f;
+    private static final float velDamping = 0.25f;
+    private static final float gravity = 0.25f;
 
-    private final float velDamping = 0.25f;
-    private final float gravity = 0.1f;
+    private static final float jumpForce = 3.0f;
+    private static final float walkForce = 0.1f;
 
-    private int state = 0;
-    private boolean facing = false;
-    private boolean step = false;
-    private short crouch = 60;
+    public static final int pixelsPerStep = 32;
+
+    private static int state = 0;
+    private static boolean facing = false;
+    private static boolean step = false;
+    private static short crouch = 60;
 
 
     public void start() {
@@ -76,7 +83,7 @@ public class Main implements Runnable {
         ticks();
     }
 
-    private void init() {
+    private static void init() {
         if (!glfwInit()) {
             System.err.println("Could not initialize GLFW!");
             return;
@@ -122,13 +129,13 @@ public class Main implements Runnable {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         System.out.println("Using OpenGL " + glGetString(GL_VERSION));
 
-        level = Levels.TEST_LEVEL;
+        level = Levels.A3_S4;
 
         setupElements();
 
     }
 
-    private void createCallbacks() {
+    private static void createCallbacks() {
         sizeCallback = new GLFWWindowSizeCallback() {
             public void invoke(long window, int w, int h) {
                 width = w;
@@ -161,8 +168,8 @@ public class Main implements Runnable {
         glfwSetWindowSizeCallback(window, sizeCallback);
     }
 
-    public void setupElements() {
-        level.setup((float) this.width / this.height);
+    public static void setupElements() {
+        level.setup((float) width / height);
     }
 
     public void run() {
@@ -175,7 +182,7 @@ public class Main implements Runnable {
         fps = 0;
 
 
-        this.isInitialized = true;
+        isInitialized = true;
         System.out.println("Initialized!");
 
         while (!glfwWindowShouldClose(window)) {
@@ -204,9 +211,9 @@ public class Main implements Runnable {
     }
 
 
-    private void ticks() {
+    private static void ticks() {
 
-        while (!this.isInitialized) {
+        while (!isInitialized) {
             try {
                 Thread.sleep(50);
             } catch(Exception ignored) {}
@@ -226,7 +233,7 @@ public class Main implements Runnable {
     }
 
 
-    private void render() {
+    private static void render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         int error = glGetError();
@@ -244,10 +251,15 @@ public class Main implements Runnable {
                 Texture textTexture = new Texture("text", image);
                 GameObject textElement = new GameObject("debug", textTexture, Shaders.TEXT, size.x, size.y, 2);
                 textQueueOut.add(textElement);
-                textQueue.remove(image);
 
                 i++;
             }
+
+            textQueueMeta.clear();
+            textQueue.clear();
+
+            textQueueMetaCopy.clear();
+            textQueueCopy.clear();
 
         }
 
@@ -257,15 +269,21 @@ public class Main implements Runnable {
         glfwPollEvents();
     }
 
-    private void tick() {
+    private static void tick() {
 
-        float currentVel = velInc;
+        float minY = level.minYPos();
+        float maxY = level.maxYPos();
+        float minX = level.minXPos();
+        float maxX = level.maxXPos();
+
+        float currentWalkForce = walkForce;
         float currentVelMax = velMax;
 
-        facing = heldMovementKeys[3];
+        if (heldMovementKeys[1] || heldMovementKeys[3])
+            facing = heldMovementKeys[3];
 
         // movements
-        if (pos.y == 0f) {
+        if (pos.y == minY) {
 
             if (state == 3) {
                 state = 0;
@@ -274,9 +292,9 @@ public class Main implements Runnable {
             // crouching
             if (heldMovementKeys[2]) {
                 crouch = 1;
-                currentVel /= 4;
+                currentWalkForce /= 4;
                 currentVelMax /= 4;
-                vel.y -= velInc;
+                vel.y -= walkForce;
                 state = 1;
             }
 
@@ -284,8 +302,8 @@ public class Main implements Runnable {
             if ((heldMovementKeys[1] || heldMovementKeys[3]) && crouch > 30) state = 2;
 
             if (!(heldMovementKeys[1] && heldMovementKeys[3])) {
-                if (heldMovementKeys[1]) vel.x -= currentVel;
-                if (heldMovementKeys[3]) vel.x += currentVel;
+                if (heldMovementKeys[1]) vel.x -= currentWalkForce;
+                if (heldMovementKeys[3]) vel.x += currentWalkForce;
             } else {
                 vel.x /= (velDamping + 1);
             }
@@ -294,19 +312,18 @@ public class Main implements Runnable {
             // leaping
             if (heldMovementKeys[0] && (heldMovementKeys[1] || heldMovementKeys[3])) {
                 if (crouch <= 30) {
-                    vel.y = currentVel * 28;
-                    vel.x = heldMovementKeys[1] ? vel.x - currentVel * 8 : vel.x + currentVel * 8;
+                    vel.y = currentWalkForce * 28;
+                    vel.x = heldMovementKeys[1] ? vel.x - currentWalkForce * 8 : vel.x + currentWalkForce * 8;
                 } else {
-                    vel.y = currentVel * 16;
-                    vel.x = heldMovementKeys[1] ? vel.x - currentVel * 6 : vel.x + currentVel * 6;
+                    vel.y = currentWalkForce * 16;
+                    vel.x = heldMovementKeys[1] ? vel.x - currentWalkForce * 6 : vel.x + currentWalkForce * 6;
                 }
                 state = 3;
-
             }
 
             // jumping
             if (heldMovementKeys[0] && !(heldMovementKeys[1] || heldMovementKeys[3])) {
-                vel.y = state == 1 ? 1.25f : 0.75f;
+                vel.y = state == 1 ? jumpForce * 1.5f : jumpForce;
                 state = 0;
             }
         }
@@ -321,7 +338,7 @@ public class Main implements Runnable {
         pos.y += vel.y;
 
         // decrement player velocity limit it
-        vel.x = pos.y <= 0f ? MathUtils.clamp(!heldMovementKeys[1] && !heldMovementKeys[3] ? vel.x / (velDamping + 1) : vel.x, -currentVelMax, currentVelMax) : vel.x;
+        vel.x = pos.y <= minY ? MathUtils.clamp(!heldMovementKeys[1] && !heldMovementKeys[3] ? vel.x / (velDamping + 1) : vel.x, -currentVelMax, currentVelMax) : vel.x;
         vel.y -= gravity;
 
         // set velocity to 0 if it is close enough
@@ -329,15 +346,15 @@ public class Main implements Runnable {
         if (Math.abs(vel.y) <= 0.001) vel.y = 0f;
 
         // set respective velocity to 0 when touching any map edge
-        if (pos.x <= 0.0f && !heldMovementKeys[3]) vel.x = 0.0f;
-        if (pos.x >= level.maxXPos() - level.getPlayer().getWidth() && !heldMovementKeys[1]) vel.x = 0.0f;
+        if (pos.x <= minX && !heldMovementKeys[3]) vel.x = 0.0f;
+        if (pos.x >= maxX - level.getPlayer().getWidth() && !heldMovementKeys[1]) vel.x = 0.0f;
 
-        if (pos.y <= 0f && !heldMovementKeys[0]) vel.y = 0.0f;
-        if (pos.y >= level.maxYPos() - level.getPlayer().getHeight() + 1 && vel.y > 0f) vel.y = 0.0f;
+        if (pos.y <= minY && !heldMovementKeys[0]) vel.y = 0.0f;
+        if (pos.y >= maxY - level.getPlayer().getHeight() + 1 && vel.y > 0f) vel.y = 0.0f;
 
         // keep player within world bounds
-        pos.x = clamp(pos.x, 0f, level.maxXPos() - level.getPlayer().getWidth());
-        pos.y = clamp(pos.y, 0f, level.maxYPos() - level.getPlayer().getHeight());
+        pos.x = clamp(pos.x, minX, maxX - level.getPlayer().getWidth());
+        pos.y = clamp(pos.y, minY, maxY - level.getPlayer().getHeight());
 
 
         // update stats
@@ -345,29 +362,44 @@ public class Main implements Runnable {
         level.getPlayer().setState(state);
         level.getPlayer().setFacing(facing);
 
-        int modPos = Math.round(pos.x) % 8;
-        step = modPos == 0 || modPos == 1 || modPos == 2 || modPos == 3;
+        int modPos = Math.round(pos.x) % pixelsPerStep;
+        step = modPos <= pixelsPerStep / 2;
 
         // display debug stats
 
-//        char[][] text = charsFromStrings( new String[] {
-//                "pos: " + pos + ", vel: " + vel,
-//                "state: " + state + ", facing: " + facing
-//        });
-//
-//        textQueue.add(imageFromText(896, 128, 16, new Color(0, 0, 0, 0), makeCCArray(text)));
-//        textQueueMeta.add(new Vec2<>(64, 10));
+        char[][] text = charsFromStrings( new String[] {
+                "pos: " + pos + ", vel: " + vel,
+                "state: " + state + ", facing: " + (facing ? "right" : "left"),
+                "WASD: " + (heldMovementKeys[0] ? "1" : "0") + (heldMovementKeys[1] ? "1" : "0") + (heldMovementKeys[2] ? "1" : "0") + (heldMovementKeys[3] ? "1" : "0"),
+                //"tq: " + textQueue.size() + " tqO: " + textQueueOut.size(), " tqM: " + textQueueMeta.size()
+        });
+
+        textQueue.add(imageFromText(896, 128, 16, new Color(0, 0, 0, 0), makeCCArray(text)));
+        textQueueMeta.add(new Vec2<>(224, 32));
 
 
         List<GameObject> textQueueOutCopy = new ArrayList<>(textQueueOut);
         for(GameObject textElement:textQueueOutCopy) {
-            textElement.move(new Vec2<>(level.getFrameX(), level.maxYPos()));
+            textElement.move(new Vec2<>(level.getFrameX(), maxY));
             level.setText(textElement);
-            textQueueOut.remove(textElement);
         }
+
+        textQueueOut.clear();
+        textQueueOutCopy.clear();
 
 
         // all other code to run every tick (such as actual game updates etc.)
+
+        Vec3<Float> rossPos = level.getFakePlayer("ross").getPos();
+
+
+        FakePlayer ross = level.getFakePlayer("ross");
+
+        if (ross != null) {
+            ross.move(new Vec2<>(rossPos.x, rossPos.y + 0.1f));
+        } else {
+            System.out.println("No Ross :c");
+        }
 
     }
 
