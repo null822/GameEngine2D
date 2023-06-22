@@ -37,7 +37,7 @@ public class GameObjectRepresenter {
     public String getName() {
         return this.name;
     }
-    public Vec3 getPos() {
+    public Vec3<Float> getPos() {
         return this.pos;
     }
     public float getZHeight() {
