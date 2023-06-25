@@ -36,8 +36,8 @@ public class Levels {
 
 
     }, new FakePlayer[]{
-            ROSS.moveCopy(new Vec2<>(500f, floor)),
-            LENNOX.moveCopy(new Vec2<>(450f, floor)),
+            MURDERER2.moveCopy(new Vec2<>(500f, floor)),
+            MURDERER1.moveCopy(new Vec2<>(450f, floor)),
     }, new float[] {12, 0, 12, 8});
 
 

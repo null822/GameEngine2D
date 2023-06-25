@@ -58,8 +58,8 @@ public class Main implements Runnable {
 
     // tick animation
     private static int currentTick = -1;
-    private static Vec2<Float> rossVel = new Vec2<>(0f, 0f);
-    private static Vec2<Float> lennoxVel = new Vec2<>(0f, 0f);
+    private static Vec2<Float> murderer_2Vel = new Vec2<>(0f, 0f);
+    private static Vec2<Float> murderer_1Vel = new Vec2<>(0f, 0f);
 
     private static Vec2<Float> banquoVel = new Vec2<>(0f, 0f);
 
@@ -397,27 +397,27 @@ public class Main implements Runnable {
 
         // all other code to run every tick (such as actual game updates etc.)
 
-        FakePlayer ross = level.getFakePlayer("ross");
-        FakePlayer lennox = level.getFakePlayer("lennox");
+        FakePlayer murderer_2 = level.getFakePlayer("murderer_2");
+        FakePlayer murderer_1 = level.getFakePlayer("murderer_1");
 
         GameObject banquo = level.getGameObject("banquo");
 
         boolean indefWait = false;
 
         if (currentTick == 0) {
-            ross.setState(2);
-            ross.setFacing(false);
+            murderer_2.setState(2);
+            murderer_2.setFacing(false);
 
-            lennox.setState(2);
-            lennox.setFacing(false);
+            murderer_1.setState(2);
+            murderer_1.setFacing(false);
 
         } else if (currentTick >= 60 && currentTick < 70) {
-            lennoxVel.x -= 0.1f;
-            rossVel.x -= 0.1f;
+            murderer_1Vel.x -= 0.1f;
+            murderer_2Vel.x -= 0.1f;
 
         } else if (currentTick >= 450 && currentTick < 455) {
-            lennoxVel.x += 0.2f;
-            rossVel.x += 0.2f;
+            murderer_1Vel.x += 0.2f;
+            murderer_2Vel.x += 0.2f;
 
         } else if (currentTick == 500) {
             dialogue("Macbeth", new String[] {
@@ -425,7 +425,7 @@ public class Main implements Runnable {
             });
 
         } else if (currentTick == 650) {
-            dialogue("Lennox", new String[] {
+            dialogue("Murderer 1", new String[] {
                     "It's Banquo's then."
             });
         } else if (currentTick == 800) {
@@ -433,7 +433,7 @@ public class Main implements Runnable {
                     "Is he dead?"
             });
         } else if (currentTick == 950) {
-            dialogue("Lennox", new String[] {
+            dialogue("Murderer 1", new String[] {
                     "His throat is cut,",
                     "I did that for him."
             });
@@ -442,7 +442,7 @@ public class Main implements Runnable {
                     "Did you do the same for Fleance?"
             });
         } else if (currentTick == 1300) {
-            dialogue("Ross", new String[] {
+            dialogue("Murderer 2", new String[] {
                     "My loyal sir,",
                     "Fleance escaped."
             });
@@ -452,7 +452,7 @@ public class Main implements Runnable {
                     "But Banquo's dead?"
             });
         } else if (currentTick == 1650) {
-            dialogue("Ross", new String[] {
+            dialogue("Murderer 2", new String[] {
                     "Ay, my good lord, he is dead."
             });
         } else if (currentTick == 1800) {
@@ -461,18 +461,18 @@ public class Main implements Runnable {
             });
         } else if (currentTick >= 1900 && currentTick < 1910) {
 
-            lennox.setFacing(true);
-            ross.setFacing(true);
+            murderer_1.setFacing(true);
+            murderer_2.setFacing(true);
 
-            lennoxVel.x += 0.1f;
-            rossVel.x += 0.1f;
+            murderer_1Vel.x += 0.1f;
+            murderer_2Vel.x += 0.1f;
 
         } else if (currentTick >= 2010 && currentTick < 2020) {
-            lennoxVel.x -= 0.1f;
-            rossVel.x -= 0.1f;
+            murderer_1Vel.x -= 0.1f;
+            murderer_2Vel.x -= 0.1f;
         } else if (currentTick == 2025) {
-            lennox.setFacing(false);
-            ross.setFacing(false);
+            murderer_1.setFacing(false);
+            murderer_2.setFacing(false);
 
         } else if (currentTick >= 2400 && currentTick < 2410) {
             banquoVel.y = banquoVel.y - 0.1f;
@@ -518,7 +518,7 @@ public class Main implements Runnable {
                     "The gory is terrible."
             });
         } else if (currentTick == 3700) {
-            dialogue("Ross", new String[]{
+            dialogue("Murderer 2", new String[]{
                     "Macbeth is not well."
             });
         } else if (currentTick == 3850) {
@@ -558,8 +558,8 @@ public class Main implements Runnable {
         }
 
 
-        ross.move(rossVel, true);
-        lennox.move(lennoxVel, true);
+        murderer_2.move(murderer_2Vel, true);
+        murderer_1.move(murderer_1Vel, true);
 
         banquo.move(banquoVel, true);
 

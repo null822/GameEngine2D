@@ -17,7 +17,7 @@ public class GameObjects {
 
     public static final GameObject BANQUO = new GameObject("banquo", Textures.BANQUO, Shaders.TEXTURE, 29, 40, 3);
 
-    public static final FakePlayer ROSS = new FakePlayer("ross", Textures.ROSS_STAND, Textures.ROSS_WALK, Shaders.TEXTURE, 32, 96, 1);
-    public static final FakePlayer LENNOX = new FakePlayer("lennox", Textures.LENNOX_STAND, Textures.LENNOX_WALK, Shaders.TEXTURE, 32, 96, 2);
+    public static final FakePlayer MURDERER2 = new FakePlayer("murderer_2", Textures.MURDERER2_STAND, Textures.MURDERER2_WALK, Shaders.TEXTURE, 32, 96, 1);
+    public static final FakePlayer MURDERER1 = new FakePlayer("murderer_1", Textures.MURDERER1_STAND, Textures.MURDERER1_WALK, Shaders.TEXTURE, 32, 96, 2);
 
 }

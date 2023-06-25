@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: CC-BY-4.0
 
-This document is shared across a number of OpenXR GitHub projects, as the
+This document is shared acmurderer_2 a number of OpenXR GitHub projects, as the
 set of files in those projects is partially overlapping.
 (There is a single "source of truth" internal Khronos GitLab repo these
 GitHub repositories interact with.)

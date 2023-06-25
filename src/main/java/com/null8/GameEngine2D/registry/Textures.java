@@ -24,11 +24,11 @@ public class Textures {
 
     public static final Texture BANQUO = new Texture("banquo", "sprite/banquo.png");
 
-    public static final TextureSet ROSS_STAND = new TextureSet("ross_stand", "sprite/ross_stand.png");
-    public static final TextureSet ROSS_WALK = new TextureSet("ross_walk", "sprite/ross_walk.png");
+    public static final TextureSet MURDERER2_STAND = new TextureSet("murderer_2_stand", "sprite/murderer_2_stand.png");
+    public static final TextureSet MURDERER2_WALK = new TextureSet("murderer_2_walk", "sprite/murderer_2_walk.png");
 
-    public static final TextureSet LENNOX_STAND = new TextureSet("lennox_stand", "sprite/lennox_stand.png");
-    public static final TextureSet LENNOX_WALK = new TextureSet("lennox_walk", "sprite/lennox_walk.png");
+    public static final TextureSet MURDERER1_STAND = new TextureSet("murderer_1_stand", "sprite/murderer_1_stand.png");
+    public static final TextureSet MURDERER1_WALK = new TextureSet("murderer_1_walk", "sprite/murderer_1_walk.png");
 
     
 
