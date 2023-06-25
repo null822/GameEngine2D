@@ -121,8 +121,11 @@ public class GameObject {
     }
 
 
-    public GameObject move(Vec3<Float> newPos) {
-        this.pos = newPos;
+    public GameObject move(Vec3<Float> newPos, boolean add) {
+        if (add)
+            this.pos = new Vec3<>(newPos.x + this.pos.x, newPos.y + this.pos.y, newPos.z + this.pos.z);
+        else
+            this.pos = newPos;
         return this;
     }
 
@@ -130,13 +133,27 @@ public class GameObject {
         this.pos = new Vec3<>(newPos, this.pos.z);
         return this;
     }
+    public GameObject move(Vec3<Float> newPos) {
+        this.pos = newPos;
+        return this;
+    }
 
-    public GameObject moveCopy(Vec3<Float> newPos) {
-        return new GameObject(this).move(newPos);
+    public GameObject move(Vec2<Float> newPos, boolean add) {
+        if (add)
+            this.pos = new Vec3<>(newPos.x + this.pos.x, newPos.y + this.pos.y, this.pos.z);
+        else
+            this.pos = new Vec3<>(newPos, this.pos.z);
+        return this;
+    }
+    public GameObject moveCopy(Vec3<Float> newPos, boolean add) {
+        return new GameObject(this).move(newPos, add);
+    }
+    public GameObject moveCopy(Vec2<Float> newPos, boolean add) {
+        return new GameObject(this).move(new Vec3<>(newPos, 0f), add);
     }
 
     public GameObject moveCopy(Vec2<Float> newPos) {
-        return new GameObject(this).move(new Vec3<>(newPos, this.pos.z));
+        return new GameObject(this).move(new Vec3<>(newPos, this.pos.z), false);
     }
 
 }

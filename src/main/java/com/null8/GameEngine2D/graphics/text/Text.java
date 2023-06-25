@@ -93,7 +93,7 @@ public class Text {
         g.fillRect(0, 0, w, h);
 
         // draw foreground
-        g.setFont(new Font("Consolas", Font.PLAIN, fontSize));
+        g.setFont(new Font("Calibri", Font.PLAIN, fontSize));
 
         int y = 0;
 

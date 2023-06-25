@@ -56,29 +56,40 @@ public class FakePlayer extends GameObject {
     }
 
 
-    public FakePlayer move(Vec3<Float> newPos) {
-        this.pos = newPos;
+    public FakePlayer move(Vec3<Float> newPos, boolean add) {
+        if (add)
+            this.pos = new Vec3<>(newPos.x + this.pos.x, newPos.y + this.pos.y, newPos.z + this.pos.z);
+        else
+            this.pos = newPos;
         return this;
     }
-    public FakePlayer move(Vec2<Float> newPos) {
-        this.pos = new Vec3<>(newPos, this.pos.z);
+
+    public FakePlayer move(Vec2<Float> newPos, boolean add) {
+        if (add)
+            this.pos = new Vec3<>(newPos.x + this.pos.x, newPos.y + this.pos.y, this.pos.z);
+        else
+            this.pos = new Vec3<>(newPos, this.pos.z);
         return this;
     }
-    public FakePlayer moveCopy(Vec3<Float> newPos) {
-        return new FakePlayer(this).move(newPos);
+    public FakePlayer moveCopy(Vec3<Float> newPos, boolean add) {
+        return new FakePlayer(this).move(newPos, add);
     }
+    public FakePlayer moveCopy(Vec2<Float> newPos, boolean add) {
+        return new FakePlayer(this).move(new Vec3<>(newPos, 0f), add);
+    }
+
     public FakePlayer moveCopy(Vec2<Float> newPos) {
-        return new FakePlayer(this).move(new Vec3<>(newPos, this.pos.z));
+        return new FakePlayer(this).move(new Vec3<>(newPos, this.pos.z), false);
     }
     public void setState(int state) {
         this.state = state;
     }
 
     /**
-     * Set the facing direction
+     * Set the facing direction:
      * false = left
      * true = right
-     * @param facing - the facing direction
+     * @param facing the facing direction
      */
     public void setFacing(boolean facing) {
         this.facing = facing;

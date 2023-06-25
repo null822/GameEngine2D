@@ -142,4 +142,12 @@ public class GameObjectManager {
     }
 
 
+    public GameObject getText(String name) {
+        for (GameObject text : texts) {
+            if (Objects.equals(text.getName(), name))
+                return text;
+        }
+        return null;
+    }
+
 }

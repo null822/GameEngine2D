@@ -142,11 +142,21 @@ public class Level {
     public Player getPlayer() {
         return this.manager.getPlayer();
     }
+    public GameObject getText(String name) {
+        return this.manager.getText(name);
+    }
     public FakePlayer getFakePlayer(String name) {
         return this.manager.getFakePlayer(name);
     }
+    public GameObject getGameObject(String name) {
+        return this.manager.getGameObject(name);
+    }
     public float getFrameX() {
         return this.frameX;
+    }
+
+    public GameObjectManager getManager() {
+        return manager;
     }
 
 }

@@ -5,10 +5,10 @@ import com.null8.GameEngine2D.level.FakePlayer;
 import com.null8.GameEngine2D.level.GameObject;
 import com.null8.GameEngine2D.level.Level;
 import com.null8.GameEngine2D.math.Vec2;
-import com.null8.GameEngine2D.math.Vec3;
 import com.null8.GameEngine2D.registry.Levels;
 import com.null8.GameEngine2D.registry.Shaders;
 import com.null8.GameEngine2D.util.MathUtils;
+import com.null8.GameEngine2D.util.TextUtils;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
@@ -49,10 +49,19 @@ public class Main implements Runnable {
     private static GLFWWindowSizeCallback sizeCallback;
 
     private static volatile boolean isInitialized = false;
+    private static boolean isRunning = true;
 
+    // text rendering
     private static final List<BufferedImage> textQueue = new ArrayList<>();
     private static final List<Vec2<Integer>> textQueueMeta = new ArrayList<>();
     private static final List<GameObject> textQueueOut = new ArrayList<>();
+
+    // tick animation
+    private static int currentTick = -1;
+    private static Vec2<Float> rossVel = new Vec2<>(0f, 0f);
+    private static Vec2<Float> lennoxVel = new Vec2<>(0f, 0f);
+
+    private static Vec2<Float> banquoVel = new Vec2<>(0f, 0f);
 
     // Movement and position
 
@@ -71,7 +80,7 @@ public class Main implements Runnable {
     public static final int pixelsPerStep = 32;
 
     private static int state = 0;
-    private static boolean facing = false;
+    private static boolean facing = true;
     private static boolean step = false;
     private static short crouch = 60;
 
@@ -146,7 +155,7 @@ public class Main implements Runnable {
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+                isRunning = !isRunning;
             }
 
             if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) heldMovementKeys[0] = true;
@@ -219,15 +228,34 @@ public class Main implements Runnable {
             } catch(Exception ignored) {}
         }
 
-        while (!glfwWindowShouldClose(window)) {
-            long now = System.nanoTime();
-            delta += (now - lastFrameTime) / ns;
-            lastFrameTime = now;
-            if (delta >= 1.0) {
-                tps++;
-                delta--;
+        boolean prev = true;
 
-                tick();
+        while (!glfwWindowShouldClose(window)) {
+
+            if (isRunning) {
+                long now = System.nanoTime();
+                delta += (now - lastFrameTime) / ns;
+                lastFrameTime = now;
+                if (delta >= 1.0) {
+                    tps++;
+                    delta--;
+
+                    currentTick++;
+                    tick();
+                }
+            }
+
+            if (prev != isRunning) {
+                System.out.println(isRunning);
+                if (isRunning) {
+                    level.getGameObject("paused").move(new Vec2<>(-100.0f, -100.0f));
+                    prev = isRunning;
+                    lastFrameTime = System.nanoTime();
+                    delta = 0.0f;
+                } else {
+                    level.getGameObject("paused").move(new Vec2<>(128.0f + level.getFrameX(), level.maxYPos()));
+                    prev = isRunning;
+                }
             }
         }
     }
@@ -249,7 +277,7 @@ public class Main implements Runnable {
             for (BufferedImage image:textQueueCopy) {
                 Vec2<Integer> size = textQueueMetaCopy.get(i);
                 Texture textTexture = new Texture("text", image);
-                GameObject textElement = new GameObject("debug", textTexture, Shaders.TEXT, size.x, size.y, 2);
+                GameObject textElement = new GameObject("text", textTexture, Shaders.TEXT, size.x, size.y, 4);
                 textQueueOut.add(textElement);
 
                 i++;
@@ -365,19 +393,178 @@ public class Main implements Runnable {
         int modPos = Math.round(pos.x) % pixelsPerStep;
         step = modPos <= pixelsPerStep / 2;
 
-        // display debug stats
-
-        char[][] text = charsFromStrings( new String[] {
-                "pos: " + pos + ", vel: " + vel,
-                "state: " + state + ", facing: " + (facing ? "right" : "left"),
-                "WASD: " + (heldMovementKeys[0] ? "1" : "0") + (heldMovementKeys[1] ? "1" : "0") + (heldMovementKeys[2] ? "1" : "0") + (heldMovementKeys[3] ? "1" : "0"),
-                //"tq: " + textQueue.size() + " tqO: " + textQueueOut.size(), " tqM: " + textQueueMeta.size()
-        });
-
-        textQueue.add(imageFromText(896, 128, 16, new Color(0, 0, 0, 0), makeCCArray(text)));
-        textQueueMeta.add(new Vec2<>(224, 32));
 
 
+        // all other code to run every tick (such as actual game updates etc.)
+
+        FakePlayer ross = level.getFakePlayer("ross");
+        FakePlayer lennox = level.getFakePlayer("lennox");
+
+        GameObject banquo = level.getGameObject("banquo");
+
+        boolean indefWait = false;
+
+        if (currentTick == 0) {
+            ross.setState(2);
+            ross.setFacing(false);
+
+            lennox.setState(2);
+            lennox.setFacing(false);
+
+        } else if (currentTick >= 60 && currentTick < 70) {
+            lennoxVel.x -= 0.1f;
+            rossVel.x -= 0.1f;
+
+        } else if (currentTick >= 450 && currentTick < 455) {
+            lennoxVel.x += 0.2f;
+            rossVel.x += 0.2f;
+
+        } else if (currentTick == 500) {
+            dialogue("Macbeth", new String[] {
+                    "There's blood on your face."
+            });
+
+        } else if (currentTick == 650) {
+            dialogue("Lennox", new String[] {
+                    "It's Banquo's then."
+            });
+        } else if (currentTick == 800) {
+            dialogue("Macbeth", new String[] {
+                    "Is he dead?"
+            });
+        } else if (currentTick == 950) {
+            dialogue("Lennox", new String[] {
+                    "His throat is cut,",
+                    "I did that for him."
+            });
+        } else if (currentTick == 1150) {
+            dialogue("Macbeth", new String[] {
+                    "Did you do the same for Fleance?"
+            });
+        } else if (currentTick == 1300) {
+            dialogue("Ross", new String[] {
+                    "My loyal sir,",
+                    "Fleance escaped."
+            });
+        } else if (currentTick == 1450) {
+            dialogue("Macbeth", new String[] {
+                    "It was so close to perfect.",
+                    "But Banquo's dead?"
+            });
+        } else if (currentTick == 1650) {
+            dialogue("Ross", new String[] {
+                    "Ay, my good lord, he is dead."
+            });
+        } else if (currentTick == 1800) {
+            dialogue("Macbeth", new String[] {
+                    "Thanks for that."
+            });
+        } else if (currentTick >= 1900 && currentTick < 1910) {
+
+            lennox.setFacing(true);
+            ross.setFacing(true);
+
+            lennoxVel.x += 0.1f;
+            rossVel.x += 0.1f;
+
+        } else if (currentTick >= 2010 && currentTick < 2020) {
+            lennoxVel.x -= 0.1f;
+            rossVel.x -= 0.1f;
+        } else if (currentTick == 2025) {
+            lennox.setFacing(false);
+            ross.setFacing(false);
+
+        } else if (currentTick >= 2400 && currentTick < 2410) {
+            banquoVel.y = banquoVel.y - 0.1f;
+        } else if (currentTick == 2410) {
+            indefWait = true;
+
+            if (banquo.getPos().y <= 38) {
+                banquoVel.y = 0f;
+                banquo.move(new Vec2<>(banquo.getPos().x, 38f));
+                indefWait = false;
+            }
+        } else if (currentTick == 2420) {
+            dialogue("Lady Macbeth", new String[]{
+                    "Come, sit down."
+            });
+        } else if (currentTick == 2550) {
+            dialogue("Macbeth", new String[]{
+                    "The table's full."
+            });
+        } else if (currentTick == 2750) {
+            dialogue("Lady Macbeth", new String[]{
+                    "Here's a place reserved"
+            });
+        } else if (currentTick == 2900) {
+            dialogue("Macbeth", new String[]{
+                    "Where?"
+            });
+        } else if (currentTick == 3050) {
+            dialogue("Lady Macbeth", new String[]{
+                    "Here!"
+            });
+        } else if (currentTick == 3200) {
+            dialogue("Macbeth", new String[]{
+                    "Which of you have done this?"
+            });
+        } else if (currentTick == 3350) {
+            dialogue("Lords", new String[]{
+                    "What, my good lord?"
+            });
+        } else if (currentTick == 3500) {
+            dialogue("Macbeth", new String[]{
+                    "You cannot say I did it.",
+                    "The gory is terrible."
+            });
+        } else if (currentTick == 3700) {
+            dialogue("Ross", new String[]{
+                    "Macbeth is not well."
+            });
+        } else if (currentTick == 3850) {
+            dialogue("Lady Macbeth", new String[]{
+                    "Sit, Macbeth is often like this.",
+                    "He will be well again in a moment."
+            });
+        } else if (currentTick == 4100) {
+            dialogue("Macbeth", new String[]{
+                    "He's still there!",
+            });
+        } else if (currentTick == 4250) {
+            dialogue("Lady Macbeth", new String[]{
+                    "All is good, Macbeth.",
+            });
+        } else if (currentTick == 4400) {
+            dialogue("Macbeth", new String[]{
+                    "Do you not see him?",
+            });
+            banquoVel.y = -1f;
+        } else if (currentTick == 4500) {
+            banquoVel.y = 0f;
+            banquo.move(new Vec2<>(banquo.getPos().x, 180f));
+        } else if (currentTick == 4400) {
+            dialogue("Lady Macbeth", new String[]{
+                    "There is nothing here!",
+            });
+        } else if (currentTick == 4550) {
+            dialogue("Macbeth", new String[]{
+                    "He was there a second ago!",
+            });
+        }
+
+
+        if (indefWait) {
+            currentTick--;
+        }
+
+
+        ross.move(rossVel, true);
+        lennox.move(lennoxVel, true);
+
+        banquo.move(banquoVel, true);
+
+
+        // add dialogues to level
         List<GameObject> textQueueOutCopy = new ArrayList<>(textQueueOut);
         for(GameObject textElement:textQueueOutCopy) {
             textElement.move(new Vec2<>(level.getFrameX(), maxY));
@@ -387,20 +574,31 @@ public class Main implements Runnable {
         textQueueOut.clear();
         textQueueOutCopy.clear();
 
+        // move existing dialogue
+        GameObject text = level.getManager().getText("text");
 
-        // all other code to run every tick (such as actual game updates etc.)
+        if (text != null)
+            text.move(new Vec2<>(level.getFrameX(), maxY - 48));
 
-        Vec3<Float> rossPos = level.getFakePlayer("ross").getPos();
+    }
 
+    private static void dialogue(String name, String[] lines) {
 
-        FakePlayer ross = level.getFakePlayer("ross");
+        String[] strings = new String[lines.length + 2];
 
-        if (ross != null) {
-            ross.move(new Vec2<>(rossPos.x, rossPos.y + 0.1f));
-        } else {
-            System.out.println("No Ross :c");
+        strings[0] = name.toUpperCase();
+        strings[1] = TextUtils.charGen(name.length(), '='); // underline (very necessary)
+
+        int i = 2;
+        for(String line:lines) {
+            strings[i] = line;
+            i++;
         }
 
+        char[][] dialogue = charsFromStrings(strings);
+
+        textQueue.add(imageFromText(1536, 256, 12, new Color(0, 0, 0, 0), makeCCArray(dialogue)));
+        textQueueMeta.add(new Vec2<>(512, 85));
     }
 
     public static void main(String[] args) {
