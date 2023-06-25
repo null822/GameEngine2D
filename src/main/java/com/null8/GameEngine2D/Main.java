@@ -515,7 +515,7 @@ public class Main implements Runnable {
         } else if (currentTick == 3500) {
             dialogue("Macbeth", new String[]{
                     "You cannot say I did it.",
-                    "The gory is terrible."
+                    "The gore is terrible."
             });
         } else if (currentTick == 3700) {
             dialogue("Murderer 2", new String[]{
